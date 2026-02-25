@@ -1,7 +1,7 @@
 import os
 import subprocess
-import google.generativeai as genai
-from typing import Annotated
+from google import genai
+from google.genai import types
 
 # ============================================================================
 # 1. Define Agent Tools (Functions the agent can call to interact with reality)
@@ -12,7 +12,6 @@ def read_file(file_path: str) -> str:
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-            # print(f"[Tool Execution] read_file({file_path}) -> {len(content)} bytes")
             return content
     except Exception as e:
         return f"Error reading file: {e}"
@@ -22,7 +21,6 @@ def write_file(file_path: str, content: str) -> str:
     try:
         with open(file_path, 'w') as f:
             f.write(content)
-        # print(f"[Tool Execution] write_file({file_path})")
         return f"Successfully wrote to {file_path}"
     except Exception as e:
         return f"Error writing file: {e}"
@@ -30,14 +28,19 @@ def write_file(file_path: str, content: str) -> str:
 def execute_bash(command: str) -> str:
     """
     Executes a bash command and returns the standard output. 
-    Can be used for things like creating directories, moving files, searching, or running curl for web requests.
+    Can be used for things like creating directories, moving files, searching, or running curl requests.
+    NOTE: Automatically times out after 15 seconds. Use explicit error handling in your commands if needed.
     """
-    # print(f"[Tool Execution] execute_bash:\n$ {command}")
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
+        # Added timeout to prevent the agent from hanging infinitely on bad curls/commands!
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True, timeout=15)
         return result.stdout if result.stdout else "Command executed successfully with no output."
+    except subprocess.TimeoutExpired:
+        return f"Command failed: Timed out after 15 seconds. Are you hanging on a network request without an explicit timeout?"
     except subprocess.CalledProcessError as e:
         return f"Command failed with error code {e.returncode}. Error: {e.stderr}"
+    except Exception as e:
+        return f"Command execution error: {e}"
 
 # ============================================================================
 # 2. Setup the Agent Loop
@@ -51,23 +54,27 @@ def main():
         print("Please run: export GEMINI_API_KEY='your-api-key-here'")
         return
 
-    # Configure the Gemini library
-    genai.configure(api_key=api_key)
-
-    # Initialize the model with our tools
-    # We use gemini-2.5-flash as it is excellent at tool use and very fast
-    model = genai.GenerativeModel(
-        model_name='gemini-2.5-flash',
-        tools=[read_file, write_file, execute_bash]
+    # Initialize the new SDK client
+    client = genai.Client(api_key=api_key)
+    
+    # Configure the Gemini library (gemini-2.5-flash is excellent at tool use)
+    config = types.GenerateContentConfig(
+        tools=[read_file, write_file, execute_bash],
+        system_instruction=(
+            "You are an autonomous AI agent with access to the user's terminal via the execute_bash tool. "
+            "If the user asks for live information or web content, DO NOT say you lack internet access. "
+            "Instead, use the execute_bash tool to run `curl` to fetch and parse the requested data from the internet. "
+            "IMPORTANT: When running `curl`, strongly prefer appending `-sL` to silence the progress bar and follow redirects."
+        ),
+        # Automatically invoke exactly one or more tools repeatedly until it formulates an answer
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False)
     )
 
-    # Start a chat session with automatic function calling enabled!
-    # This means the SDK will automatically call our python functions above when the model requests them,
-    # and feed the results straight back to the model without us having to write the loop manually.
-    chat = model.start_chat(enable_automatic_function_calling=True)
+    # Start a chat session!
+    chat = client.chats.create(model='gemini-2.5-flash', config=config)
 
     print("==========================================================")
-    print("🤖 Gemini Agent Initialized")
+    print("🤖 Gemini Agent Initialized (using new google-genai SDK)")
     print("Tools Available: read_file, write_file, execute_bash")
     print("Type 'exit' to quit.")
     print("==========================================================\n")
@@ -88,10 +95,6 @@ def main():
             
             # Print the final response
             print(f"\n🤖 Agent: {response.text}")
-
-            # Optional: You can inspect the chat history to see which tools it actually called!
-            # for message in chat.history:
-            #    print(message)
 
         except KeyboardInterrupt:
             print("\nGoodbye!")

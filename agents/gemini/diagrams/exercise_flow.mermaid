@@ -1,0 +1,16 @@
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant System
+
+    User->>Agent: Submit Exercise Prompt
+    loop Agent Reasoning Loop
+        Agent-->>Agent: Plan / Reason ("What do I need to do?")
+        Agent->>System: Execute action via tool (e.g., read_file / bash)
+        System->>Agent: Tool response (e.g., file contents / stdout)
+    end
+    Agent->>User: Final Answer & Summary of Actions
+
+    Note over User,System: Evaluation: Check tool usage count, time taken, final accuracy
+```

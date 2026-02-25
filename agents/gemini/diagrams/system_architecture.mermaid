@@ -1,0 +1,14 @@
+```mermaid
+graph TD
+    A[User / Evaluator] -->|Provides Prompt| B(Gemini Python Agent)
+    B -->|Calls LLM API| C{Gemini Core Model}
+    C -->|Returns Actions / Reasoning| B
+    B -->|Executes Tool / Logic| D[Local Filesystem / OS]
+    B -->|Executes Web Requests| E[External Web / APIs]
+    D -->|Tool Result| B
+    E -->|Tool Result| B
+    B -->|Provides Final Output| A
+
+    classDef Agent fill:#f9f,stroke:#333,stroke-width:2px;
+    class B Agent;
+```

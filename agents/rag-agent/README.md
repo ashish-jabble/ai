@@ -113,60 +113,67 @@ uv pip install -r requirements.txt
 ```bash
 python3 agent.py
 ```
+
+<details>
+<summary>📋 Sample Output (click to expand)</summary>
+
+```
 Initializing Qwen3 (qwen3:8b) via Ollama...
 Creating RAG agent with tools: web_search, fetch_webpage
 RAG Agent ready!
 
 Running demo queries...
 
-
 ────────────────────────────────────────────────────────────
 📝 Query: Create Google Ads copy for the latest iPhone launch. Include key specs and features.
 ────────────────────────────────────────────────────────────
 
+🤖 Response:
+
+Here's a Google Ads copy for the latest iPhone launch (iPhone 17 series),
+based on current specs and features:
+
+🚀 Upgrade to the Future with the iPhone 17!
+Experience next-level performance with the iPhone 17 and iPhone 17 Pro
+—the most advanced iPhones ever!
+
+✨ Key Features:
+✅ A18 Bionic Chip: Smoother multitasking, faster app launches
+✅ Pro-grade Camera System: 48 MP main lens + 12 MP ultra-wide
+✅ Dynamic Island 2.0: Intuitive notifications and controls
+✅ All-Day Battery Life: Up to 24 hours of streaming
+✅ Lightning-fast 5G: Stay connected everywhere
+
+📱 Choose Your Model:
+- iPhone 17e (Entry-Level): 6 GB RAM, 48 MP camera, starting at ₹43,900
+- iPhone 17 Pro (Pro Version): Advanced telephoto lens, premium design
+
+Sources:
+1. iPhone 17 specs - Wikipedia
+2. CNET: Best iPhone 2026 guide
+3. 91Mobiles: iPhone price list
+
+────────────────────────────────────────────────────────────
+
+============================================================
+  RAG Agent — Interactive Mode
+  Model: Qwen3:8b via Ollama
+  Tools: Web Search, Page Reader
+  Type 'quit' or 'exit' to stop
+============================================================
+
+🔍 You: Give me the two finalists of T20 Cricket Men's World Cup 2026?
 
 🤖 Response:
 
-Here's a Google Ads copy for the latest iPhone launch (iPhone 17 series), based on current specs and
-features:
+The 2026 ICC Men's T20 World Cup finalists are India and England.
 
----
-
-**🚀 Upgrade to the Future with the iPhone 17!**  
-Experience next-level performance with the **iPhone 17** and **iPhone 17 Pro**—the most advanced
-iPhones ever!
-
-✨ **Key Features:**  
-✅ **A18 Bionic Chip**: Smoother multitasking, faster app launches, and superior AI capabilities.  
-✅ **Pro-grade Camera System**: 48 MP main lens + 12 MP ultra-wide, capture stunning photos and 4K
-videos.
-✅ **Dynamic Island 2.0**: Intuitive notifications and controls right on your screen.  
-✅ **Action Button**: Customize shortcuts for quick access to apps, music, or more.  
-✅ **All-Day Battery Life**: Up to 24 hours of streaming, browsing, and more.  
-✅ **Lightning-fast 5G**: Stay connected everywhere, all the time.  
-
-**📱 Choose Your Model:**  
-- **iPhone 17e** (Entry-Level): 6 GB RAM, 48 MP camera, starting at ₹43,900.  
-- **iPhone 17 Pro** (Pro Version): Advanced telephoto lens, bigger battery, and premium design.  
-
-**📅 Launch Date:** September 19, 2025.  
-**🛒 Available Now:** Pre-order today and get exclusive early-bird perks!  
-
-**Don’t Miss Out!**  
-👉 [Shop iPhone 17 Now](https://www.apple.com/in/iphone-17)  
-
----
-
-**Sources:**  
-1. [iPhone 17 specs and release date](https://en.wikipedia.org/wiki/List_of_iPhone_models)  
-2. [CNET: Best iPhone 2026 guide](https://www.cnet.com/tech/mobile/best-iphone/)  
-3. [91Mobiles: iPhone price list](https://www.91mobiles.com/list-of-phones/apple-mobile-price-list-
-in-india)
-
-*Note: Specs are based on 2025–2026 releases. Always verify details on Apple’s official site.*
-
-────────────────────────────────────────────────────────────
+Sources:
+1. ICC Men's T20 World Cup 2026: India qualify for the Final
+2. ICC Men's T20 World Cup 2026 Schedule
 ```
+
+</details>
 
 ### Single Query Mode
 
